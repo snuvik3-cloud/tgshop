@@ -2,62 +2,197 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
     <title>Stars & Premium Store</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            /* Считываем цвета из темы Telegram */
+            --tg-bg: var(--tg-theme-bg-color, #171717);
+            --tg-text: var(--tg-theme-text-color, #f5f5f5);
+            --tg-secondary-bg: var(--tg-theme-secondary-bg-color, #1e1e1e);
+            --tg-accent: #b478ff; /* Ваш сиреневый для акцентов */
+            --card-radius: 20px;
+        }
+
         body {
-            font-family: sans-serif;
-            background-color: var(--tg-theme-bg-color);
-            color: var(--tg-theme-text-color);
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--tg-bg);
+            color: var(--tg-text);
+            margin: 0;
+            padding: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 20px;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
         }
-        .card {
-            background-color: var(--tg-theme-secondary-bg-color);
-            border-radius: 12px;
-            padding: 15px;
-            margin: 10px;
-            width: 90%;
+
+        /* Хедер */
+        header {
+            width: 100%;
+            padding: 25px 0 15px;
             text-align: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            background: linear-gradient(180deg, var(--tg-bg) 0%, rgba(0,0,0,0) 100%);
+            position: sticky;
+            top: 0;
+            z-index: 10;
         }
-        button {
-            background-color: var(--tg-theme-button-color);
-            color: var(--tg-theme-button-text-color);
+
+        header h1 {
+            font-size: 22px;
+            font-weight: 700;
+            margin: 0;
+            background: linear-gradient(90deg, #d3acff, #f8f0ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Контейнер для карточек */
+        .container {
+            width: 100%;
+            max-width: 400px;
+            padding: 0 20px 30px;
+            box-sizing: border-box;
+        }
+
+        /* Карточка товара с эффектом стекла */
+        .card {
+            background: rgba(30, 30, 30, 0.4); /* Полупрозрачный фон */
+            backdrop-filter: blur(10px); /* Эффект стекла */
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05); /* Тонкая рамка */
+            border-radius: var(--card-radius);
+            padding: 20px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        /* Визуальный эффект при нажатии (только на мобильных) */
+        .card:active {
+            transform: scale(0.98);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+
+        .card-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        /* Стилизация иконок товаров */
+        .product-icon-box {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+        }
+
+        /* Уникальные цвета для разных товаров */
+        .stars-icon {
+            background: rgba(255, 204, 0, 0.1);
+            color: #ffcc00;
+        }
+
+        .premium-icon {
+            background: rgba(180, 120, 255, 0.1);
+            color: #b478ff;
+        }
+
+        .card-details h3 {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .card-details p {
+            margin: 2px 0 0;
+            font-size: 13px;
+            color: rgba(255,255,255,0.6);
+            font-weight: 300;
+        }
+
+        /* Кнопка "Купить" */
+        .buy-btn {
+            background: linear-gradient(135deg, #b478ff 0%, #d3acff 100%);
+            color: #171717;
             border: none;
-            border-radius: 8px;
-            padding: 10px 20px;
-            font-weight: bold;
+            border-radius: 12px;
+            padding: 10px 18px;
+            font-size: 14px;
+            font-weight: 600;
             cursor: pointer;
-            margin-top: 10px;
+            transition: filter 0.2s ease;
+            box-shadow: 0 4px 10px rgba(180, 120, 255, 0.2);
+        }
+
+        .buy-btn:active {
+            filter: brightness(0.9);
         }
     </style>
 </head>
 <body>
-    <h2>Магазин Stars & Premium</h2>
+    <header>
+        <h1>Stars & Premium Store</h1>
+    </header>
     
-    <div class="card">
-        <h3>🌟 50 Telegram Stars</h3>
-        <p>Цена: 150₽</p>
-        <button onclick="buyProduct('Stars 50')">Купить</button>
-    </div>
+    <div class="container">
+        <div class="card" onclick="startBuy('Stars 50')">
+            <div class="card-info">
+                <div class="product-icon-box stars-icon">
+                    <i class='bx bxs-star-half'></i>
+                </div>
+                <div class="card-details">
+                    <h3>50 Telegram Stars</h3>
+                    <p>Цена: 150₽</p>
+                </div>
+            </div>
+            <button class="buy-btn">Купить</button>
+        </div>
 
-    <div class="card">
-        <h3>💎 Telegram Premium (1 мес)</h3>
-        <p>Цена: 299₽</p>
-        <button onclick="buyProduct('Premium 1 Month')">Купить</button>
+        <div class="card" onclick="startBuy('Premium 1 Month')">
+            <div class="card-info">
+                <div class="product-icon-box premium-icon">
+                    <i class='bx bxs-diamond'></i>
+                </div>
+                <div class="card-details">
+                    <h3>Telegram Premium (1 мес)</h3>
+                    <p>Цена: 299₽</p>
+                </div>
+            </div>
+            <button class="buy-btn">Купить</button>
+        </div>
     </div>
 
     <script>
         const tg = window.Telegram.WebApp;
-        tg.expand(); // Разворачиваем на все окно
+        tg.expand(); // Разворачиваем апку
 
-        function buyProduct(name) {
-            // Отправляем данные боту
-            tg.sendData("order:" + name);
+        function startBuy(name) {
+            // Чтобы бот "поймал" данные через F.web_app_data,
+            // нужно вызывать sendData именно в ответ на клик.
+            // Также это работает только если апка открыта через KeyboardButton в BotFather.
+            if (tg.sendData) {
+                tg.sendData("order:" + name);
+                tg.close(); // Опционально: закрываем апку после отправки
+            } else {
+                // Если sendData недоступен, показываем всплывающее окно
+                tg.showPopup({
+                    title: 'Заказ',
+                    message: 'Вы выбрали: ' + name + '.\nК сожалению, прямой ответ боту не поддерживается в этой версии Telegram. Скопируйте название и отправьте его боту вручную.'
+                });
+            }
         }
     </script>
 </body>
